@@ -14,22 +14,36 @@
  * }
  */
 class Solution {
+    static class Info {
+        int dia;
+        int ht;
 
-    static int max;
-
-    static int height(TreeNode root){
-        if(root==null) return 0;
-
-        int left = height(root.left);
-        int right = height(root.right);
-
-        max = Math.max(max, left+right);
-
-        return 1+Math.max(left,right);
+        public Info(int dia, int ht) {
+            this.dia = dia;
+            this.ht = ht;
+        }
     }
+
+    private Info diameter(TreeNode root) {
+        if (root == null) {
+            return new Info(0, 0);
+        }
+
+        Info leftInfo = diameter(root.left);
+        Info rightInfo = diameter(root.right);
+
+        int dia = Math.max(Math.max(leftInfo.dia, rightInfo.dia), leftInfo.ht + rightInfo.ht + 1);
+        int ht = Math.max(leftInfo.ht, rightInfo.ht) + 1;
+
+        return new Info(dia, ht);
+    }
+
     public int diameterOfBinaryTree(TreeNode root) {
-        max = 0;
-        height(root);
-        return max;
+        if (root == null) {
+            return 0;
+        }
+
+        Info result = diameter(root);
+        return result.dia - 1; // Subtract 1 to get the number of edges instead of nodes
     }
 }
